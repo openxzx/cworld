@@ -78,6 +78,33 @@ bool clear_stack(snode *s)
 	return true;
 }
 
+int top_stack(snode s)
+{
+	return s.next->data;
+}
+
+bool empty_stack(snode s)
+{
+	if (s.next == NULL)
+		return true;
+	else
+		return false;
+}
+
+int lenght_stack(snode s)
+{
+	int cnt = 0;
+	snode *tmp = s.next;
+
+	while (tmp != NULL) {
+		s.next = tmp->next;
+		tmp = s.next;
+		cnt++;
+	}
+
+	return cnt;
+}
+
 int main(int argc, char *argv[])
 {
 	int i;
@@ -97,6 +124,10 @@ int main(int argc, char *argv[])
 		}
 	}
 	traverse_stack(&s);
+
+	printf("top stack: %d\n", top_stack(s));
+	printf("empty stack: %d\n", empty_stack(s));
+	printf("stack lenght: %d\n", lenght_stack(s));
 
 	/* Test2 */
 	if (pop_stack(&s, &val) == true)

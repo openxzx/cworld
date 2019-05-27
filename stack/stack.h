@@ -11,5 +11,8 @@ bool push_stack(snode *s, int val);
 int traverse_stack(snode *s);
 bool pop_stack(snode *s, int *val);
 bool clear_stack(snode *s);
+int top_stack(snode s);
+bool empty_stack(snode s);
+int lenght_stack(snode s);
 
 #endif
