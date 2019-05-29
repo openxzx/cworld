@@ -13,6 +13,7 @@ bool queue_init(link_queue *q)
 		return false;
 	}
 
+	new_node->next = NULL;
 	q->front = q->rear = new_node;
 
 	return true;
@@ -49,7 +50,7 @@ bool queue_de(link_queue *q, int *e)
 	*e = q->front->next->data;
 	q_node *tmp = q->front->next;
 	q->front->next = tmp->next;
-	if (tmp == q->rear->next)
+	if (tmp == q->rear)
 		q->rear = q->front;
 	free(tmp);
 	tmp = NULL;
