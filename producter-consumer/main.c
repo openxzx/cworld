@@ -1,7 +1,18 @@
+/*
+ * Author: Zhenxing Xu <xzxlnmail.163.com>
+ *
+ * This is free and unencumbered software released into the public domain.
+ * For details see the UNLICENSE file at the root of the source tree.
+ *
+ * Checking the thread of the precess, command: ps -T -p PID, help message: info/man ps | less.
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <sys/prctl.h>
 
 #define COUNT_MAX	10
 
@@ -16,6 +27,8 @@ void *producter(void *arg)
 {
 	static int in = 0;
 	int tmp;
+
+	prctl(PR_SET_NAME, "Producter");
 
 	while (1) {
 		pthread_mutex_lock(&mutex);
@@ -42,6 +55,8 @@ void *consumer(void *arg)
 {
 	static int out = 0;
 	int tmp;
+
+	prctl(PR_SET_NAME, "Consumer");
 
 	while (1) {
 		pthread_mutex_lock(&mutex);
