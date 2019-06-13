@@ -69,6 +69,7 @@ void *producter(void *arg)
 
 void *consumer(void *arg)
 {
+	int i;
 	static int out = 0;
 	int tmp;
 	struct sched_param param;
@@ -85,6 +86,18 @@ void *consumer(void *arg)
 			pthread_mutex_unlock(&mutex);
 			continue;
 		}
+
+		/*
+		Dead waiting status:
+		low priority thread get mutex and have a long running time,
+		when high priority thread interrupt running to low priority thread, but it can't get mutex.
+		*/
+#if 0
+		for (i = 0; i < 2^10; i++) {
+			tmp = i * 1;
+			tmp = 0;
+		}
+#endif
 
 		tmp = buf[out];
 		out = (out + 1) % COUNT_MAX;
