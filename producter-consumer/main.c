@@ -19,6 +19,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <sys/prctl.h>
+#include <semaphore.h>
 
 #define COUNT_MAX	10
 
@@ -35,6 +36,9 @@ struct sched_param p_param;
 pthread_attr_t c_attr;
 struct sched_param c_param;
 
+sem_t p_sem;
+sem_t c_sem;
+
 void *producter(void *arg)
 {
 	static int in = 0;
@@ -44,10 +48,12 @@ void *producter(void *arg)
 	prctl(PR_SET_NAME, "Producter");
 
 	while (1) {
+		sem_wait(&p_sem);
+		pthread_mutex_lock(&mutex);
+
 		pthread_attr_getschedparam(&p_attr, &param);
 		printf("\033[34mproducter priority: %d.\033[0m\n", param.sched_priority);
 
-		pthread_mutex_lock(&mutex);
 		if (counter >= COUNT_MAX) {
 			pthread_mutex_unlock(&mutex);
 			continue;
@@ -60,8 +66,9 @@ void *producter(void *arg)
 		counter++;
 
 		pthread_mutex_unlock(&mutex);
+		sem_post(&c_sem);
 
-		usleep(100);
+		sleep(1);
 	}
 
 	return NULL;
@@ -77,10 +84,12 @@ void *consumer(void *arg)
 	prctl(PR_SET_NAME, "Consumer");
 
 	while (1) {
+		sem_wait(&c_sem);
+		pthread_mutex_lock(&mutex);
+
 		pthread_attr_getschedparam(&c_attr, &param);
 		printf("\033[34mconsumer priority: %d.\033[0m\n", param.sched_priority);
 
-		pthread_mutex_lock(&mutex);
 		if (counter <= 0) {
 			printf("\033[31mconsumer: counter is 0.\033[0m\n");
 			pthread_mutex_unlock(&mutex);
@@ -105,8 +114,9 @@ void *consumer(void *arg)
 		counter--;
 
 		pthread_mutex_unlock(&mutex);
+		sem_post(&p_sem);
 
-		usleep(100);
+		sleep(1);
 	}
 
 	return NULL;
@@ -152,8 +162,14 @@ int main(int argc, char *argv[])
 
 	memset(buf, 0, sizeof(buf) / sizeof(unsigned int));
 
+	/* Init semaphores */
+	sem_init(&p_sem, 0, 1);
+	sem_init(&c_sem, 0, 0);
+
+	/* Init mutex */
 	pthread_mutex_init(&mutex, NULL);
 
+	/* Create threads */
 	ret = create_thread();
 	if (ret) {
 		printf("\033[31mCreate thead failed, return: %d\033[0m\n", ret);
@@ -162,6 +178,9 @@ int main(int argc, char *argv[])
 
 
 	run_thread();
+
+	sem_destroy(&p_sem);
+	sem_destroy(&c_sem);
 
 	pthread_mutex_destroy(&mutex);
 	pthread_attr_destroy(&p_attr);
