@@ -159,8 +159,17 @@ int run_thread(void)
 int main(int argc, char *argv[])
 {
 	int ret;
+	int i;
 
-	memset(buf, 0, sizeof(buf) / sizeof(unsigned int));
+	for (i = 0; i < COUNT_MAX; i++) {
+		buf[i] = 1;
+		printf("buf[%d]: %d\n", i, buf[i]);
+	}
+
+	/* Memset function's size is the count of byte */
+	memset(buf, 0, sizeof(buf));
+	for (i = 0; i < COUNT_MAX; i++)
+		printf("buf[%d]: %d\n", i, buf[i]);
 
 	/* Init semaphores */
 	sem_init(&p_sem, 0, 1);
