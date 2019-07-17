@@ -12,6 +12,8 @@
  * SCHED_RR：采用实时调度策略，且时间片轮转，时间片用完，系统将重新分配时间片，并置于就绪队列尾。
  * SCHED_BATCH：针对批处理进程。
  * SCHED_IDLE：使用此调度器的进程的优先级最低。在实现CFS时引入。
+ *
+ * IPC: inter-process communication(进程间通讯)
  */
 
 #include <stdio.h>
