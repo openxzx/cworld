@@ -6,6 +6,15 @@
  * Function pointer format: 返回值类型 ( * 指针变量名) ([形参列表]);
  * eg. int (*add)(int a, int b);
  *
+ * typedef int (*fun_ptr)(int,int); //define function pointer type
+ * fun_ptr max_func=max;
+ *
+ * eg. int (*test[3])(int a, int b); //function pointer arrays
+ *
+ * two difference:
+ * pointer function: function return pointer type
+ * function pointer: pointer into function
+ *
  * This is free and unencumbered software released into the public domain.
  * For details see the UNLICENSE file at the root of the source tree.
  */
