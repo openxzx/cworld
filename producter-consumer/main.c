@@ -116,7 +116,7 @@ void *consumer(void *arg)
 		pthread_mutex_unlock(&mutex);
 		sem_post(&p_sem);
 
-		sleep(1);
+		sleep(3);
 	}
 
 	return NULL;
@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
 		printf("buf[%d]: %d\n", i, buf[i]);
 
 	/* Init semaphores */
-	sem_init(&p_sem, 0, 1);
+	sem_init(&p_sem, 0, COUNT_MAX);
 	sem_init(&c_sem, 0, 0);
 
 	/* Init mutex */

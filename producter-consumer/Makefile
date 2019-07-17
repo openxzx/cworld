@@ -11,7 +11,7 @@ GIT_VER := $(shell git rev-parse HEAD | cut -c 1-6)
 CC = gcc
 LD = gcc
 CCFLAGS = -W
-TARGET = porducter-consumer
+TARGET = producter-consumer
 
 INCLUDES = -I.
 CSRCS = main.c
