@@ -6,103 +6,100 @@
 
 bool init_stack(snode *s)
 {
-	s = (snode *)malloc(sizeof(snode));
-	if (s == NULL)
+	node *head_node = (node *)malloc(sizeof(node));
+	if (head_node == NULL)
 		return false;
 
-	s->data = 0;
-	s->next = NULL;
+	head_node->data = 0;
+	head_node->next = NULL;
+
+	s->base = head_node;
+	s->top = head_node;
 
 	return true;
 }
 
 bool push_stack(snode *s, int val)
 {
-	snode *p;
-
-	p = (snode *)malloc(sizeof(snode));
+	node *p = (node *)malloc(sizeof(node));
 	if (p == NULL)
 		return false;
 
-	p->next = s->next;
-	s->next = p;
 	p->data = val;
+	p->next = s->top->next;
+	s->top->next = p;
+	s->top = p;
 
 	return true;
 }
 
 int traverse_stack(snode *s)
 {
-	snode *tmp = s->next;
-
-	if (tmp == NULL) {
+	if (s->base == s->top) {
 		printf("Stack is NULL.\n");
 		return 0;
 	}
 
-	while (tmp != NULL) {
+	node *tmp = s->base->next;
+	while (tmp->next != NULL) {
 		printf("%d ", tmp->data);
 		tmp = tmp->next;
 	}
-
-	printf("\n");
+	printf("%d \n", tmp->data);
 
 	return 0;
 }
 
-bool pop_stack(snode *s, int *val)
+int top_stack(snode *s)
 {
-	snode *tmp = s->next;
-
-	if (tmp != NULL) {
-		s->next = tmp->next;
-		*val = tmp->data;
-		free(tmp);
-		return true;
-	} else
-		return false;
+	return s->top->data;
 }
 
-bool clear_stack(snode *s)
+bool empty_stack(snode *s)
 {
-	snode *tmp = s->next;
-
-	while (tmp != NULL) {
-		s->next = tmp->next;
-		free(tmp);
-		tmp = s->next;
-	}
-
-	s->next = NULL;
-
-	return true;
-}
-
-int top_stack(snode s)
-{
-	return s.next->data;
-}
-
-bool empty_stack(snode s)
-{
-	if (s.next == NULL)
+	if (s->base == s->top)
 		return true;
 	else
 		return false;
 }
 
-int lenght_stack(snode s)
+int lenght_stack(snode *s)
 {
 	int cnt = 0;
-	snode *tmp = s.next;
+	node *tmp = s->base->next;
 
-	while (tmp != NULL) {
-		s.next = tmp->next;
-		tmp = s.next;
+	while (tmp->next != NULL) {
+		tmp = tmp->next;
 		cnt++;
 	}
+	cnt++;
 
 	return cnt;
+}
+
+bool pop_stack(snode *s, int *val)
+{
+	node *tmp = s->base->next;
+
+	while (tmp->next != s->top) {
+		tmp = tmp->next;
+	}
+
+	*val = s->top->data;
+	tmp->next = s->top->next;
+	s->top = tmp;
+	free(tmp);
+
+	return true;
+}
+
+bool clear_stack(snode *s)
+{
+	int *val;
+
+	pop_stack(s, val);
+
+	return true;
 }
 
 int main(int argc, char *argv[])
@@ -111,32 +108,39 @@ int main(int argc, char *argv[])
 	int val = 0;
 	snode s;
 
+	// Init
 	if (init_stack(&s) != true) {
 		printf("Init stack failed.\n");
 		return 0;
+	} else {
+		printf("Init stack success.\n");
 	}
 
-	/* Test1 */
+	// Push
 	for (i = 1; i <= 6; i++) {
 		if (push_stack(&s, i) != true) {
 			printf("Push stack %d failed.\n", i);
 			return 0;
 		}
 	}
+	printf("Push stack success.\n");
+
+	// Traverse
 	traverse_stack(&s);
 
-	printf("top stack: %d\n", top_stack(s));
-	printf("empty stack: %d\n", empty_stack(s));
-	printf("stack lenght: %d\n", lenght_stack(s));
+	// Reading top, lenght and if stack is empty
+	printf("top stack: %d\n", top_stack(&s));
+	printf("stack lenght: %d\n", lenght_stack(&s));
+	printf("empty stack: %d\n", empty_stack(&s));
 
-	/* Test2 */
+	// Pop
 	if (pop_stack(&s, &val) == true)
 		printf("Pop stack val: %d\n", val);
 	else
 		printf("Pop stack failed.\n");
 	traverse_stack(&s);
 
-	/* Test3 */
+	// Test3
 	clear_stack(&s);
 	traverse_stack(&s);
 
