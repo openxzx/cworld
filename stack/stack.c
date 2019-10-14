@@ -79,25 +79,32 @@ int lenght_stack(snode *s)
 
 bool pop_stack(snode *s, int *val)
 {
-	node *tmp = s->base->next;
+	if (s->base == s->top)
+		return true;
 
-	while (tmp->next != s->top) {
-		tmp = tmp->next;
+	node *tmp1 = s->base;
+	node *tmp2 = s->top;
+
+	while (tmp1->next != s->top) {
+		tmp1 = tmp1->next;
 	}
 
 	*val = s->top->data;
-	tmp->next = s->top->next;
-	s->top = tmp;
-	free(tmp);
+	tmp1->next = s->top->next;
+	s->top = tmp1;
+	free(tmp2);
 
 	return true;
 }
 
 bool clear_stack(snode *s)
 {
-	int *val;
+	int i;
+	int val;
+	int len = lenght_stack(s);
 
-	pop_stack(s, val);
+	for (i = 0; i < len; i++)
+		pop_stack(s, &val);
 
 	return true;
 }
@@ -105,7 +112,7 @@ bool clear_stack(snode *s)
 int main(int argc, char *argv[])
 {
 	int i;
-	int val = 0;
+	int val;
 	snode s;
 
 	// Init
@@ -134,13 +141,15 @@ int main(int argc, char *argv[])
 	printf("empty stack: %d\n", empty_stack(&s));
 
 	// Pop
-	if (pop_stack(&s, &val) == true)
-		printf("Pop stack val: %d\n", val);
-	else
-		printf("Pop stack failed.\n");
+	for (i = 0; i < 2; i++) {
+		if (pop_stack(&s, &val) == true)
+			printf("Pop stack val: %d\n", val);
+		else
+			printf("Pop stack failed.\n");
+	}
 	traverse_stack(&s);
 
-	// Test3
+	// Clear
 	clear_stack(&s);
 	traverse_stack(&s);
 
