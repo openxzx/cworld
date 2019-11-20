@@ -158,10 +158,63 @@ int run_thread(void)
 	return 0;
 }
 
+void help(void)
+{
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+	printf(" Linux system \n");
+}
+
 int main(int argc, char *argv[])
 {
 	int ret;
 	int i;
+
+	/* Help messages */
+	if (argc == 2) {
+		if (strcmp((const char *)&argv[1], (const char *)"-h")) {
+			help();
+			return 0;
+		}
+	}
 
 	for (i = 0; i < COUNT_MAX; i++) {
 		buf[i] = 1;
