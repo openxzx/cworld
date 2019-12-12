@@ -13,6 +13,16 @@ struct stype {
 	long unsigned int g;
 };
 
+/* Struct initrial */
+struct stype stmp = {
+	.a = 1,
+	.b = 1.0,
+	.c = '1',
+	.d = 1,
+	.f = 1.0,
+	.g = 1,
+};
+
 union utype {
 	int a;
 	float b;
@@ -22,24 +32,18 @@ union utype {
 	long unsigned int g;
 };
 
+/* Union initrial */
+union utype utmp = {
+	.a = 1,
+	.b = 1.0,
+	.c = '1',
+	.d = 1,
+	.f = 1.0,
+	.g = 1,
+};
+
 int main(int argc, char **argv)
 {
-	struct stype stmp;
-	stmp.a = 1;
-	stmp.b = 1.0;
-	stmp.c = '1';
-	stmp.d = 1;
-	stmp.f = 1.0;
-	stmp.g = 1;
-
-	union utype utmp;
-	utmp.a = 1;
-	utmp.b = 1.0;
-	utmp.c = '1';
-	utmp.d = 1;
-	utmp.f = 1.0;
-	utmp.g = 1;
-
 	printf("%d\n", (unsigned int)sizeof(stmp.a));
 	printf("%d\n", (unsigned int)sizeof(stmp.b));
 	printf("%d\n", (unsigned int)sizeof(stmp.c));
