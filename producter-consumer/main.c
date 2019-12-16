@@ -160,47 +160,7 @@ int run_thread(void)
 
 void help(void)
 {
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
-	printf(" Linux system \n");
+	printf("Help messages.\n");
 }
 
 int main(int argc, char *argv[])
