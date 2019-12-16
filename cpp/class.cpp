@@ -18,28 +18,28 @@ private:
 
 Dog::Dog()
 {
-        cout << "Dog Class: constructor function.\n";
+        cout << "Dog Class: constructor function." << endl;
 }
 
 Dog::~Dog()
 {
-        cout << "Dog Class: destructor function.\n";
+        cout << "Dog Class: destructor function." << endl;
 }
 
 void Dog::run()
 {
-        cout << "Dog Class: run function.\n";
+        cout << "Dog Class: run function." << endl;
 }
 
 void Dog::jump()
 {
-        cout << "Dog Class: jump function.\n";
+        cout << "Dog Class: jump function." << endl;
         fly();
 }
 
 void Dog::fly()
 {
-        cout << "Dog Class: fly function.\n";
+        cout << "Dog Class: fly function." << endl;
 }
 
 int main()
