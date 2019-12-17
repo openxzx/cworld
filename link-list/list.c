@@ -133,7 +133,7 @@ int list_traverse(list_node_type *pHead)
 
 	printf("\n");
 	while (pTemp != NULL) {
-		printf("\033[32mdata: %d, index: %d, pNext: %p\033[0m\n", pTemp->data, pTemp->index, pTemp->pNext);
+		printf("\033[32mdata: %c, index: %d, pNext: %p\033[0m\n", (char)pTemp->data, pTemp->index, pTemp->pNext);
 		pTemp = pTemp->pNext;
 	}
 	printf("\n");

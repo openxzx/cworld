@@ -33,6 +33,11 @@ char * merge_array(char *array1, char *array2, char *new, int len1, int len2)
 	return new;
 }
 
+void help(void)
+{
+        printf("Input paramter format: ./list str1 str2\n");
+}
+
 int main(int argc, char *argv[])
 {
 	int i;
@@ -41,7 +46,7 @@ int main(int argc, char *argv[])
 
 	/* Judging input parameters count */
 	if (argc != 3) {
-		printf("Input parameters count error.\n");
+                help();
 		return 0;
 	}
 
