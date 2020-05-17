@@ -1,3 +1,15 @@
+/*
+ * Author: Zhenxing Xu <xzxlnmail@163.com>
+ *
+ * This is free and unencumbered software released into the public domain.
+ * For details see the UNLICENSE file at the root of the source tree.
+ *
+ * Refer to the above.
+ * https://www.cnblogs.com/birdBull/p/12027595.html
+ * https://www.linuxidc.com/Linux/2010-06/26870.htm
+ * http://www.cnitblog.com/zouzheng/archive/2006/12/17/20695.html
+ */
+
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
