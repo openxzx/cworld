@@ -19,6 +19,7 @@
 #include <termios.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/ioctl.h>
 
 /* Speed array value */
 int speed_arr[] = {
@@ -148,6 +149,12 @@ int send_data(const int fd, const char *buf, const int size)
 
 int read_data(const int fd, char *buf, const int size)
 {
+        int bytes = 0;
+
+        while (1)
+                ioctl(fd, FIONREAD, &bytes);
+        printf("Reading bytes: %d\n", bytes);
+
         return read(fd, buf, size);
 }
 
