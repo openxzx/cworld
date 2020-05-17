@@ -8,6 +8,7 @@
  * https://www.cnblogs.com/birdBull/p/12027595.html
  * https://www.linuxidc.com/Linux/2010-06/26870.htm
  * http://www.cnitblog.com/zouzheng/archive/2006/12/17/20695.html
+ * https://blog.csdn.net/developerof/article/details/82317540
  */
 
 #include <stdio.h>
@@ -45,7 +46,7 @@ static char send_cmd[] = {
 
 int open_dev(const char *dev_name)
 {
-        return open(dev_name, O_RDWR);
+        return open(dev_name, O_RDWR | O_NOCTTY);
 }
 
 int set_port(const int fd, int speed, int databits, int stopbits, int parity)
@@ -57,7 +58,6 @@ int set_port(const int fd, int speed, int databits, int stopbits, int parity)
                 return -1;
 
         /* Setting speed */
-        tcflush(fd, TCIFLUSH);
         switch (speed) {
         case 115200:
                 cfsetispeed(&opt, B115200);
@@ -68,11 +68,13 @@ int set_port(const int fd, int speed, int databits, int stopbits, int parity)
                 cfsetospeed(&opt, B115200);
                 break;
         }
+        /* Before setting attr, we must clear input/output queue by tcflush */
+        tcflush(fd, TCIFLUSH);
+        /* TCSANOW for setting attr is valid at once */
         if (tcsetattr(fd, TCSANOW, &opt) != 0)
                 return -1;
 
         opt.c_cflag &= ~CSIZE;
-
         /* Setting databit for 8bits */
         switch (databits) {
         case 7:
@@ -128,9 +130,11 @@ int set_port(const int fd, int speed, int databits, int stopbits, int parity)
                 break;
         }
 
+        /* Before setting attr, we must clear input/output queue by tcflush */
         tcflush(fd, TCIFLUSH);
         opt.c_cc[VTIME] = 150;
         opt.c_cc[VMIN] = 0;
+        /* TCSANOW for setting attr is valid at once */
         if (tcsetattr(fd, TCSANOW, &opt) != 0)
                 return -1;
 
@@ -152,7 +156,7 @@ int main(int argc, char *argv[])
         int i, n;
         int fd;
         char *dev_name = "/dev/ttyUSB0";
-        char read_buf[32];
+        unsigned char read_buf[32];
         int read_buf_size;
 
         /* Open devcice file */
@@ -175,8 +179,9 @@ int main(int argc, char *argv[])
                 return 0;
         }
         printf("Sending datas finish.\n");
+
         read_buf_size = read_data(fd, read_buf, 12);
-        printf("Reading datas: ");
+        printf("Reading datas %d: ", read_buf_size);
         for (i = 0; i < read_buf_size; i++)
                 printf("0x%x ", read_buf[i]);
         printf("\n");
