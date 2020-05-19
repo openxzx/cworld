@@ -41,13 +41,14 @@ int name_arr[] = {
 };
 
 /* Uart communication protrol */
-static char send_cmd[] = {
-        0x00, 0x01, 0x00
+static char send_cmd[][3] = {
+    {0x00, 0x01, 0x00},
+    {0x00, 0x03, 0x00},
 };
 
 int open_dev(const char *dev_name)
 {
-        return open(dev_name, O_RDWR | O_NOCTTY);
+        return open(dev_name, O_RDWR);
 }
 
 int set_port(const int fd, int speed, int databits, int stopbits, int parity)
@@ -131,12 +132,15 @@ int set_port(const int fd, int speed, int databits, int stopbits, int parity)
                 break;
         }
 
+        /* Setting local flag, ICANON for Nonstandard mode */
+        opt.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+
         /* Before setting attr, we must clear input/output queue by tcflush */
         tcflush(fd, TCIFLUSH);
-        opt.c_cc[VTIME] = 150;
+        opt.c_cc[VTIME] = 0;
         opt.c_cc[VMIN] = 0;
         /* TCSANOW for setting attr is valid at once */
-        if (tcsetattr(fd, TCSANOW, &opt) != 0)
+        if (tcsetattr(fd, TCSADRAIN, &opt) != 0)
                 return -1;
 
         return 0;
@@ -151,20 +155,24 @@ int read_data(const int fd, char *buf, const int size)
 {
         int bytes = 0;
 
-        while (1)
-                ioctl(fd, FIONREAD, &bytes);
-        printf("Reading bytes: %d\n", bytes);
+        fcntl(fd, F_SETFL, FNDELAY);
+        while (1) {
+            ioctl(fd, FIONREAD, &bytes);
+            if (bytes)
+                break;
+        }
 
+        printf("Reading bytes: %d\n", bytes);
         return read(fd, buf, size);
 }
 
 int main(int argc, char *argv[])
 {
-        int i, n;
-        int fd;
+        unsigned int i, j;
+        int n, fd;
         char *dev_name = "/dev/ttyUSB0";
         unsigned char read_buf[32];
-        int read_buf_size;
+        unsigned int read_buf_size;
 
         /* Open devcice file */
         if ((fd = open_dev(dev_name)) == -1) {
@@ -179,19 +187,23 @@ int main(int argc, char *argv[])
         }
 
         /* Sending command */
-        n = sizeof(send_cmd) / sizeof(unsigned char);
-        if (send_data(fd, send_cmd, n) != n) {
-                printf("Sending data failed\n");
-                close(fd);
-                return 0;
+        for (i = 0; i < sizeof(send_cmd)/sizeof(send_cmd[0]); i++) {
+            n = sizeof(send_cmd[i]) / sizeof(unsigned char);
+            if (send_data(fd, send_cmd[i], n) != n) {
+                    printf("Sending data failed\n");
+                    close(fd);
+                    return 0;
+            }
+            printf("Sending datas finish.\n");
+            if (i == 0)
+                read_buf_size = read_data(fd, read_buf, 12);
+            else if (i == 1)
+                read_buf_size = read_data(fd, read_buf, 10);
+            printf("Reading datas %d: ", read_buf_size);
+            for (j = 0; j < read_buf_size; j++)
+                    printf("0x%x ", read_buf[j]);
+            printf("\n\n");
         }
-        printf("Sending datas finish.\n");
-
-        read_buf_size = read_data(fd, read_buf, 12);
-        printf("Reading datas %d: ", read_buf_size);
-        for (i = 0; i < read_buf_size; i++)
-                printf("0x%x ", read_buf[i]);
-        printf("\n");
 
         close(fd);
         return 0;
