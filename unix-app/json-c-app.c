@@ -9,27 +9,27 @@
 
 int main(void)
 {
+        int i;
         const char * rstr = NULL;
         json_object * robj = NULL;
 
         int data1 = 10;
         int data2 = 47000000;
 
+        struct json_object *data3 = json_object_new_array();
         robj = json_object_new_object();
 
-        json_object_object_add(robj, "data1", json_object_new_int(data1));
-        json_object_object_add(robj, "data2", json_object_new_int(data2));
+        for (i = 0; i < 3; i++) {
+                json_object_object_add(robj, "data1", json_object_new_int(i));
+                json_object_object_add(robj, "data2", json_object_new_int(i));
+                json_object_array_add(data3, robj);
+        }
 
-        struct json_object *data3 = json_object_new_array();
-        json_object_array_add(data3, json_object_new_int(1));
-        json_object_array_add(data3, json_object_new_int(2));
-        json_object_array_add(data3, json_object_new_int(3));
-        json_object_object_add(robj, "data3", data3);
-
-        rstr = json_object_to_json_string_ext(robj, JSON_C_TO_STRING_PLAIN);
+        rstr = json_object_to_json_string_ext(data3, JSON_C_TO_STRING_PLAIN);
         printf("%s\n", rstr);
 
         json_object_put(robj);
+        json_object_put(data3);
 
         return 0;
 }
