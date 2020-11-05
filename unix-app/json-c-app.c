@@ -8,28 +8,30 @@
 #include <string.h>
 #include <json-c/json.h>
 
-#define CNT     1
+#define CNT     100
+
 void fetch(int *buf, json_object * data_array)
 {
     int i;
 
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < CNT; i++)
         json_object_array_add(data_array, json_object_new_int(buf[i]));
 }
 
-int main(void)
+char * json_test(void)
 {
     int i;
+    int buf[CNT];
+    char * buff = NULL;
     const char * str = NULL;
-    int buf[3];
     json_object * dutycycle_obj = NULL;
     json_object * chanusage_array = NULL;
-    //json_object * data_array[CNT] = { NULL };
-    //json_object * data_obj[CNT] = { NULL} ;
-    json_object * data_array = NULL;
-    json_object * data_obj = NULL;
+    json_object * data_array[CNT] = { NULL };
+    json_object * data_obj[CNT] = { NULL} ;
 
     memset(buf, 0, sizeof(buf));
+    for (i = 0; i < sizeof(buf); i++)
+        buf[i] = i;
 
     dutycycle_obj = json_object_new_object();
 
@@ -39,49 +41,47 @@ int main(void)
     json_object_object_add(dutycycle_obj, "transmitted", json_object_new_int(1024));
 
     chanusage_array = json_object_new_array();
-    //for (i = 0; i < CNT; i++) {
-    //    data_array[i] = json_object_new_array();
-    //    data_obj[i] = json_object_new_object();
-    //}
-
-    data_array = json_object_new_array();
-    data_obj = json_object_new_object();
 
     for (i = 0; i < CNT; i++) {
-        //json_object_object_add(data_obj[i], "freq", json_object_new_int(470));
-        //fetch(buf, data_array[i]);
-        //json_object_object_add(data_obj[i], "data", data_array[i]);
-        //json_object_object_add(data_obj[i], "endtime", json_object_new_int(100));
-        //json_object_object_add(data_obj[i], "step", json_object_new_int(10));
-        //json_object_array_add(chanusage_array, data_obj[i]);
+        data_array[i] = json_object_new_array();
+        data_obj[i] = json_object_new_object();
 
-        json_object_object_add(data_obj, "freq", json_object_new_int(470));
-        fetch(buf, data_array);
-        json_object_object_add(data_obj, "data", data_array);
-        json_object_object_add(data_obj, "endtime", json_object_new_int(100));
-        json_object_object_add(data_obj, "step", json_object_new_int(10));
-        json_object_array_add(chanusage_array, data_obj);
-
+        json_object_object_add(data_obj[i], "freq", json_object_new_int(470));
+        fetch(buf, data_array[i]);
+        json_object_object_add(data_obj[i], "data", data_array[i]);
+        json_object_object_add(data_obj[i], "endtime", json_object_new_int(100));
+        json_object_object_add(data_obj[i], "step", json_object_new_int(10));
+        json_object_array_add(chanusage_array, data_obj[i]);
     }
-    printf("success\n");
     json_object_object_add(dutycycle_obj, "ChanUsage", chanusage_array);
-    printf("step\n");
 
     str = json_object_to_json_string_ext(dutycycle_obj, JSON_C_TO_STRING_PLAIN);
-    printf("step\n");
     if (NULL == str) {
         printf("string for NULL\n");
-        return 0;
+        return NULL;
     }
-    json_object_put(data_array);
-    json_object_put(data_obj);
-    printf("%s\n", str);
+    buff = malloc(strlen(str)+1);
+    memcpy(buff, str, strlen(str)+1);
+
+    for (i = 0; i < CNT; i++) {
+        json_object_put(data_array[i]);
+        json_object_put(data_obj[i]);
+    }
     json_object_put(chanusage_array);
     json_object_put(dutycycle_obj);
-    //for (i = 0; i < CNT; i++) {
-    //    json_object_put(data_array[i]);
-    //    json_object_put(data_obj[i]);
-    //}
 
-    return 0;
+    return buff;
+}
+
+int main(void)
+{
+        char * p = NULL;
+        while (1) {
+            p = json_test();
+            printf("psizeof: %ld, pstrlen: %ld\n", sizeof(p), strlen(p));
+            free(p);
+            p = NULL;
+        }
+
+        return 0;
 }
